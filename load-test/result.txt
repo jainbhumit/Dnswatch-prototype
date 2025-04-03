@@ -1,0 +1,5 @@
+total query = 1000
+successfully answered query = 699 , percentage = 69.89999999999999
+failed query = 301 , percentage = 30.099999999999998
+total time taken = 49.761733055114746
+average time = 0.07118988992148033
