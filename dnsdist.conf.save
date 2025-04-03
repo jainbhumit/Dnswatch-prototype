@@ -1,0 +1,21 @@
+-- Listen on all interfaces on port 53
+setLocal("0.0.0.0:53")
+setKey("b315b5a3bb114bc6c40e0897ab28a34c")
+
+-- Define Trusted Customer IPs/Subnets
+trustedIPs = newNMG()
+trustedIPs:addMask("192.168.1.0/24")  -- Internal office network
+trustedIPs:addMask("10.0.1.0/24")  -- EC2 instances allowed to use this DNS resolver
+trustedIPs:addMask("182.74.58.202/32")  -- Specific external client IP
+
+-- Define Backend DNS Server (Running on ECS)
+newServer({address=, pool="trusted"})  -- Forward queries to ECS-based DNS server
+
+-- Route Trusted Clients to the ECS DNS Resolver
+addAction(NetmaskGroupRule(trustedIPs), PoolAction("trusted"))  
+
+-- Restrict Queries to Only Trusted Clients
+setACL({"192.168.1.0/24", "10.0.1.0/24", "182.74.58.202"})  
+
+-- Enable Basic Logging (Optional)
+setVerboseHealthChecks(true)
