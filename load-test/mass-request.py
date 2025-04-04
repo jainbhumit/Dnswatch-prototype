@@ -1,9 +1,10 @@
-import dns.resolver
+import dns.asyncresolver
 import asyncio
 import time
 
-resolver = dns.resolver.Resolver()
+resolver = dns.asyncresolver.Resolver()
 resolver.nameservers = ["52.223.47.52"]
+# resolver.nameservers = ["8.8.8.8"]
 resolver.timeout = 1
 resolver.lifetime = 1
 
@@ -22,7 +23,8 @@ async def make_dns_query(domain_name):
     query_result = {"domain": domain_name}
     try:
         start_time = time.time()
-        answers = resolver.resolve(domain_name, "A")
+        answers = await resolver.resolve(domain_name, "A")
+        print('#', end='')
         end_time = time.time()
         query_result["status"] = "success"
         query_result["answers"] = [answer.to_text() for answer in answers]
@@ -32,29 +34,21 @@ async def make_dns_query(domain_name):
     except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
         pass
 
-
     return query_result
 
 
 async def get_query_results(domain_names):
-    query_results = []
-    for domain_name in domain_names:
-        query_results.append(None)
-        query_results[-1] = asyncio.create_task(make_dns_query(domain_name))
-
-    for i in range(len(query_results)):
-        print("waiting for query number =", i)
-        query_results[i] = await query_results[i]
-    print("\n\n")
+    query_results = [make_dns_query(domain_name) for domain_name in domain_names]
+    query_results = await asyncio.gather(*query_results)
 
     return query_results
 
 
 async def main():
-    domain_names = get_domain_names("your_domain_name_list.txt")
+    domain_names = get_domain_names("public-domain-lists/opendns-random-domains.txt")[:100]
     print("file processed\n")
     query_results = await get_query_results(domain_names)
-    success, fail, time_taken = 0, 0, 0
+    success, fail, time_taken = 1, 0, 0
     for query_result in query_results:
         if query_result.get("status") == "success":
             success += 1
@@ -62,13 +56,14 @@ async def main():
         else:
             fail += 1
 
-    total = success+fail
+    total = success + fail
     print("total query =", total)
     print("successfully answered query =", success, f", percentage = {(success/total)*100}")
     print("failed query =", fail, f", percentage = {(fail/total)*100}")
-    print('total time taken =', time_taken)
     print("average time =", time_taken/success)
 
+start = time.time()
 print("test started\n\n")
 asyncio.run(main())
 print("\n\n", '*'*20, "\n\ntest end")
+print(time.time()-start)
