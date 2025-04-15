@@ -1,0 +1,1 @@
+deb [signed-by=/etc/apt/keyrings/rec-50-pub.asc] http://repo.powerdns.com/ubuntu noble-rec-50 main
