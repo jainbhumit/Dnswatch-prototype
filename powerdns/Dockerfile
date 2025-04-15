@@ -10,7 +10,9 @@ RUN install -d /etc/apt/keyrings && \
 RUN apt-get update && \
     apt-get install -y \
     pdns-recursor \
-    lua-socket && \
+    lua-socket \
+    luarocks && \
+    luarocks install luaredis && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/pdns-recursor && chown pdns:pdns /var/run/pdns-recursor
