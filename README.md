@@ -47,6 +47,8 @@ PowerDNS is an open-source DNS resolver with extensive customization options. Th
 - Implement custom Lua scripts:
   - `preresolve.lua` – Executes before resolving a request.
   - `postresolve.lua` – Executes after resolving a request.
+- Integrate the redis deploy on memorydb clustur with lua using luarock
+- Insert the domain to redis using lamda code refer lamda_function_redis.py and .lambda_function.zip for layering of redis.
 - Deploy PowerDNS using Docker:
   - Create a Docker image and push it to AWS ECR.
   - Deploy the image as an **ECS Fargate Task** for scalability.
