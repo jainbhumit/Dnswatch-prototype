@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+dict = {'key1': 'value1', 'key2': 'value2', 'key3': 'value3', 'query': {'domain': 'google.com', 'action': 'block'}}
+print(dict['query']['domain'])
+=======
 import json
 import boto3
 import pg8000
@@ -78,3 +82,4 @@ def lambda_handler(event, context):
             "statusCode": 500,
             "body": json.dumps(str(e))
         }
+>>>>>>> 00b436fd44b19902de69dfaaa09c9a2efa24c76b
